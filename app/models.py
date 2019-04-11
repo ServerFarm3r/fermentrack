@@ -841,6 +841,14 @@ class BrewPiDevice(models.Model):
                 error_message = "Device {} set to fridge_constant without a setpoint".format(self.device_name)
                 logger.error(error_message)
                 raise ValueError(error_message)
+        elif method == "glycol_constant":
+            if set_temp is not None:
+                self.reset_profile()
+                self.send_message("setGlycol", str(set_temp))
+            else:
+                error_message = "Device {} set to glycol_constant without a setpoint".format(self.device_name)
+                logger.error(error_message)
+                raise ValueError(error_message)
         elif method == "beer_profile":
             try:
                 ferm_profile = FermentationProfile.objects.get(id=profile)
@@ -871,6 +879,35 @@ class BrewPiDevice(models.Model):
 
             self.send_message("setActiveProfile", str(self.active_profile.id))
 
+        elif method == "glycol_profile":
+            try:
+                ferm_profile = FermentationProfile.objects.get(id=profile)
+            except:
+                error_message ="Device {} set to glycol_profile {} but the profile could not be located".format(
+                    self.device_name, profile)
+                logger.error(error_message)
+                raise ValueError(error_message)
+
+            if not ferm_profile.is_assignable():
+                error_message = "Device {} set to glycol_profile {} but the profile isn't assignable".format(
+                    self.device_name, profile)
+                logger.error(error_message)
+                raise ValueError(error_message)
+
+            if profile_startat is not None:
+                start_at = profile_startat
+            else:
+                start_at = datetime.timedelta(seconds=0)  # Set start_at to have no effect
+
+            self.active_profile = ferm_profile
+
+            timezone_obj = pytz.timezone(getattr(settings, 'TIME_ZONE', 'UTC'))
+            # We're subtracting start_at because we want to start in the past
+            self.time_profile_started = timezone.now() - start_at
+
+            self.save()
+
+            self.send_message("setActiveProfile", str(self.active_profile.id))
         return True  # If we made it here, return True (we did our job)
 
     def start_new_brew(self, beer_name=None):

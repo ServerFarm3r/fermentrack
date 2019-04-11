@@ -513,6 +513,22 @@ while run:
             logMessage("Notification: Beer temperature set to {} degrees in web interface".format(cs['beerSet']))
             raise socket.timeout  # go to serial communication to update controller
 
+        elif messageType == "setGlycol":  # new constant beer temperature received
+            try:
+                newTemp = float(value)
+                cs['glycolSet'] = round(newTemp, 2)
+            except ValueError:
+                logMessage("Cannot convert temperature '" + value + "' to float")
+                continue
+
+            cs['mode'] = 'g'
+            # round to 2 dec, python will otherwise produce 6.999999999
+            bg_ser.writeln("j{{mode:g, glycolSet:{}}}".format(cs['glycolSet']))
+            # Reload dbConfig from the database (in case we were using profiles)
+            dbConfig = models.BrewPiDevice.objects.get(device_name=a)
+            logMessage("Notification: Glycol temperature set to {} degrees in web interface".format(cs['glycolSet']))
+            raise socket.timeout  # go to serial communication to update controller
+
         elif messageType == "setFridge":  # new constant fridge temperature received
             try:
                 newTemp = float(value)
@@ -598,6 +614,16 @@ while run:
                 cs['mode'] = 'p'
                 bg_ser.writeln("j{mode:p}")
                 logMessage("Notification: Profile mode enabled")
+                raise socket.timeout  # go to serial communication to update controller
+        elif messageType == "setActiveGlycolProfile":
+            # We're using a dbConfig object to manage everything. We aren't being passed anything by Fermentrack
+            logMessage("Setting controller to beer profile mode using database-configured profile")
+            conn.send(b"Profile successfully updated")
+            dbConfig = models.BrewPiDevice.objects.get(id=dbConfig.id)  # Reload dbConfig from the database
+            if cs['mode'] is not 'y':
+                cs['mode'] = 'y'
+                bg_ser.writeln("j{mode:y}")
+                logMessage("Notification: Glycol Profile mode enabled")
                 raise socket.timeout  # go to serial communication to update controller
 
         elif messageType == "programController" or messageType == "programArduino":

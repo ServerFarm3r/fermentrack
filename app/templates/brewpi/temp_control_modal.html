@@ -18,6 +18,8 @@
                         <li role="presentation" {% if temp_control_status.device_mode == "fridge_constant" %}class="active"{% endif %}><a href="#fridgeConstant{{ this_device.id }}" aria-controls="fridgeConstant{{ this_device.id }}" role="pill" data-toggle="pill">Fridge Constant</a></li>
                         <li role="presentation" {% if temp_control_status.device_mode == "beer_constant" %}class="active"{% endif %}><a href="#beerConstant{{ this_device.id }}" aria-controls="beerConstant{{ this_device.id }}" role="pill" data-toggle="pill">Beer Constant</a></li>
                         <li role="presentation" {% if temp_control_status.device_mode == "beer_profile" %}class="active"{% endif %}><a href="#beerProfile{{ this_device.id }}" aria-controls="beerProfile{{ this_device.id }}" role="pill" data-toggle="pill">Beer Profile</a></li>
+                        <li role="presentation" {% if temp_control_status.device_mode == "glycol_constant" %}class="active"{% endif %}><a href="#glycolConstant{{ this_device.id }}" aria-controls="glycolConstant{{ this_device.id }}" role="pill" data-toggle="pill">Glycol Constant</a></li>
+                        <li role="presentation" {% if temp_control_status.device_mode == "glycol_profile" %}class="active"{% endif %}><a href="#glycolProfile{{ this_device.id }}" aria-controls="glycolProfile{{ this_device.id }}" role="pill" data-toggle="pill">Glycol Profile</a></li>
                         <li role="presentation" {% if temp_control_status.device_mode == "off" %}class="active"{% endif %}><a href="#off{{ this_device.id }}" aria-controls="off{{ this_device.id }}" role="pill" data-toggle="pill">Off</a></li>
                     </ul>
                 </div>
@@ -67,7 +69,39 @@
 
                         </form>
                     </div>{# End Beer Profile #}
+                    {# Glycol Constant Form #}
+                    <div role="pillpanel" class="col-md-8 tab-pane{% if temp_control_status.device_mode == "glycol_constant" %} active{% endif %}" id="glycolConstant{{ this_device.id }}">
+                        <form action="{% url "device_temp_control" this_device.id %}" method="post" >{% csrf_token %}
+                            {% temp_control_label this_device temp_control_status %}
+                            Set To <input type="text" placeholder="62.5" class="form-control" autocomplete="off" name="temperature_setting" style="display: inline-block; width: 100px; margin: 5px"> &deg;{{ this_device.temp_format }}<br>
+                            <input type="hidden" name="temp_control" value="glycol_constant">
+                            <button type="submit" class="btn btn-large btn-primary">Set Beer Constant</button>
+                        </form>
+                    </div>{# End Glycol Constant #}
+                    {# Glycol Profile Form #}
+                    <div role="pillpanel" class="col-md-8 tab-pane{% if temp_control_status.device_mode == "glycol_profile" %} active{% endif %}" id="glycolProfile{{ this_device.id }}">
+                        <form action="{% url "device_temp_control" this_device.id %}" method="post" >{% csrf_token %}
+                            {% temp_control_label this_device temp_control_status %}
 
+                            {% if available_profiles %}
+                            Select Profile:
+                            <select class="form-control" data-toggle="select" name="profile">
+                                <option value="-1">Choose profile</option>
+                                {% for this_profile in available_profiles %}
+                                    {% if this_profile.is_assignable %}
+                                <option value="{{ this_profile.id }}">{{ this_profile.name }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                            <p>Start <input type="text" name="start_at" placeholder="0h 0m"> into the profile (optional).</p>
+                            <input type="hidden" name="temp_control" value="glycol_profile">
+                            <button type="submit" class="btn btn-large btn-primary">Set Glycol Profile</button>
+                            {% else %}
+                                No available beer profiles have been created and are active
+                            {% endif %}
+
+                        </form>
+                    </div>{# End Glycol Profile #}
                     {# Off Form #}
                     <div role="pillpanel" class="col-md-8 tab-pane{% if temp_control_status.device_mode == "off" %} active{% endif %}" id="off{{ this_device.id }}">
                         <form action="{% url "device_temp_control" this_device.id %}" method="post" >{% csrf_token %}

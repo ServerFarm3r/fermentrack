@@ -619,7 +619,7 @@ while run:
                 raise socket.timeout  # go to serial communication to update controller
         elif messageType == "setActiveGlycolProfile":
             # We're using a dbConfig object to manage everything. We aren't being passed anything by Fermentrack
-            logMessage("Setting controller to beer profile mode using database-configured profile")
+            logMessage("Setting controller to glycol profile mode using database-configured profile")
             conn.send(b"Profile successfully updated")
             dbConfig = models.BrewPiDevice.objects.get(id=dbConfig.id)  # Reload dbConfig from the database
             if cs['mode'] is not 'y':

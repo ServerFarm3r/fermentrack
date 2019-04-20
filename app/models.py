@@ -914,7 +914,7 @@ class BrewPiDevice(models.Model):
 
             self.save()
 
-            self.send_message("setActiveProfile", str(self.active_profile.id))
+            self.send_message("setActiveGlycolProfile", str(self.active_profile.id))
         return True  # If we made it here, return True (we did our job)
 
     def start_new_brew(self, beer_name=None):

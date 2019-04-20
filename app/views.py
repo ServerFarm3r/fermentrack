@@ -411,14 +411,14 @@ def device_temp_control(request, device_id):
                 except ValueError as e:
                     messages.error(request, str(e))
                     return redirect('siteroot')
-            elif form.cleaned_data['temp_control'] == 'beer_constant' or form.cleaned_data['temp_control'] == 'fridge_constant':
+            elif form.cleaned_data['temp_control'] == 'beer_constant' or form.cleaned_data['temp_control'] == 'fridge_constant' or form.cleaned_data['temp_control'] == 'glycol_constant':
                 try:
                     success = active_device.set_temp_control(method=form.cleaned_data['temp_control'],
                                                              set_temp=float(form.cleaned_data['temperature_setting']))
                 except ValueError as e:
                     messages.error(request, str(e))
                     return redirect('siteroot')
-            elif form.cleaned_data['temp_control'] == 'beer_profile':
+            elif form.cleaned_data['temp_control'] == 'beer_profile' or form.cleaned_data['temp_control'] == 'glycol_profile':
                 if 'start_at' in form.cleaned_data:
                     start_at = form.cleaned_data['start_at']
                 else:

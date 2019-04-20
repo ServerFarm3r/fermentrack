@@ -470,6 +470,8 @@ while run:
             conn.send(json.dumps(cs['fridgeSet']).encode(encoding="cp437"))
         elif messageType == "getBeer":  # echo fridge temperature setting
             conn.send(json.dumps(cs['beerSet']).encode(encoding="cp437"))
+        elif messageType == "getGlycol": # echo glycol temperature setting
+            conn.send(json.dumps(cs['glycolSet']).encode(encoding="cp437"))
         elif messageType == "getControlConstants":
             conn.send(json.dumps(cc).encode(encoding="cp437"))
         elif messageType == "getControlSettings":

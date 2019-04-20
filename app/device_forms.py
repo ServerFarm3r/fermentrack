@@ -254,6 +254,8 @@ class TempControlForm(forms.Form):
         ('beer_profile', 'Beer Profile'),
         ('fridge_constant', 'Fridge Constant'),
         ('beer_constant', 'Beer Constant'),
+        ('glycol_constant', 'Glycol Constant'),
+        ('glycol_profile', 'Glycol Profile')
     )
 
     @staticmethod
@@ -309,13 +311,13 @@ class TempControlForm(forms.Form):
             if cleaned_data['temp_control'] == 'off':
                 # If temp control is off, we don't need a profile or setting
                 return cleaned_data
-            elif cleaned_data['temp_control'] == 'beer_constant' or cleaned_data['temp_control'] == 'fridge_constant':
+            elif cleaned_data['temp_control'] == 'beer_constant' or cleaned_data['temp_control'] == 'fridge_constant' or cleaned_data['temp_control'] == 'glycol_constant':
                 # For constant modes, we must have a temperature setting
                 if 'temperature_setting' in cleaned_data:
                     return cleaned_data
                 else:
                     raise forms.ValidationError("A temperature setting must be provided for 'constant' modes")
-            elif cleaned_data['temp_control'] == 'beer_profile':
+            elif cleaned_data['temp_control'] == 'beer_profile' or cleaned_data['temp_control'] == 'glycol_profile':
                 # and for profile modes, we must have a profile
                 if 'profile' in cleaned_data:
                     return cleaned_data

@@ -808,6 +808,13 @@ class BrewPiDevice(models.Model):
         elif device_mode == 'p':  # Device mode is beer profile
             control_status['device_mode'] = "beer_profile"
 
+        elif device_mode == 'g':  # Device mode is glycol constant
+            control_status['device_mode'] = "glycol_constant"
+            control_status['set_temp'] = self.send_message("getGlycol", read_response=True)
+
+        elif device_mode == 'y':  #Device mode is glycol profile
+            control_status['device_mode'] = "glycol_profile"
+
         else:
             # No idea what the device mode is
             logger.error("Invalid device mode '{}' on device {}".format(device_mode, self.device_name))

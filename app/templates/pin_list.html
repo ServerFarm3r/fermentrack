@@ -14,7 +14,7 @@
    <div class="text-danger">Please correct the error{{ form.errors }} below.</div>
 {% endif %}
 
-{% if active_device.isGlycolDevice %}
+{% if active_device.glycol_Device %}
 <h1>Glycol TAG Works!</h1>
 {% endif %}
 <div id="sensorStatus">
@@ -344,7 +344,7 @@
 </div>
 
 {% else %}
-{% if active_device.isGlycolDevice %}
+{% if active_device.glycol_Device %}
 <h1>Glycol TAG Works!</h1>
 {% endif %}
     <p>An error was found when attempting to load the sensors/pins on the device. Attempt to resolve the error,

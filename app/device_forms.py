@@ -32,7 +32,7 @@ class DeviceForm(forms.Form):
 
     # Glycol Support
 
-    isGlycolDevice = forms.BooleanField(required=False, initial=False,
+    glycol_Device = forms.BooleanField(required=False, initial=False,
                                        help_text="Whether or not this device is controlling a glycol setup")
 
     # Note - initial=random.randint(2000,3000) only assigns at Fermentrack load-time, not when the form is instantiated

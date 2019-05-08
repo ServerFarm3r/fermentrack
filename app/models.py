@@ -473,6 +473,9 @@ class BrewPiDevice(models.Model):
 
     ######## The following are used if we are loading the configuration directly from the database.
     useInetSocket = models.BooleanField(default=False, help_text="Whether or not to use an internet socket (rather than local)")
+    # Glycol Support
+    isGlycolDevice = models.BooleanField(default=False, help_text="Whether or not this device is controlling a glycol setup")
+    
     socketPort = models.IntegerField(default=2222, validators=[MinValueValidator(10,"Port must be 10 or higher"),
                                                                MaxValueValidator(65535, "Port must be 65535 or lower")],
                                      help_text="The internet socket to use (only used if useInetSocket above is "

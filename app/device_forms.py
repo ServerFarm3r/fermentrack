@@ -30,6 +30,11 @@ class DeviceForm(forms.Form):
     useInetSocket = forms.BooleanField(required=False, initial=True,
                                        help_text="Whether or not to use an internet socket (rather than local)")
 
+    # Glycol Support
+
+    isGlycolDevice = forms.BooleanField(required=False, initial=False,
+                                       help_text="Whether or not this device is controlling a glycol setup")
+
     # Note - initial=random.randint(2000,3000) only assigns at Fermentrack load-time, not when the form is instantiated
     # There is code on the forms which will effectively accomplish the same thing every time the user accesses the form
     socketPort = forms.IntegerField(initial=random.randint(2000,3000), min_value=1024, max_value=65536, required=False,

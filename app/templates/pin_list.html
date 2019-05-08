@@ -14,7 +14,9 @@
    <div class="text-danger">Please correct the error{{ form.errors }} below.</div>
 {% endif %}
 
-
+{% if active_device.isGlycolDevice %}
+<h1>Glycol TAG Works!</h1>
+{% endif %}
 <div id="sensorStatus">
     <div class="row">{#  This section displays the heating/cooling pin, fridge sensor statuses #}
         <div class="col-sm-4 sensor-setup-grid-box">

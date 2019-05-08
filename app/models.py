@@ -811,9 +811,6 @@ class BrewPiDevice(models.Model):
         elif device_mode == 'p':  # Device mode is beer profile
             control_status['device_mode'] = "beer_profile"
 
-        elif device_mode == 'False': # Adding for testing.
-            control_status['device_mode'] = "off"
-
         else:
             # No idea what the device mode is
             logger.error("Invalid device mode '{}' on device {}".format(device_mode, self.device_name))

@@ -264,7 +264,7 @@ class GenericPushTarget(models.Model):
                                 to_send['gravity_unit'] = "G"
                     except:
                         pass
-            string_to_send = json.dumps(to_send)
+            string_to_send = to_send
         else:
             raise ValueError("Invalid data format specified for push target")
         # We've got the data (in a json'ed string) - lets send it

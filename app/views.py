@@ -110,7 +110,7 @@ def add_device(request):
                 temp_format=form.cleaned_data['temp_format'],
                 data_point_log_interval=form.cleaned_data['data_point_log_interval'],
                 # Glycol support
-                glycol_Device=form.cleaned_date['glycol_Device'],
+                glycol_Device=form.cleaned_data['glycol_Device'],
                 useInetSocket=form.cleaned_data['useInetSocket'],
                 socketPort=form.cleaned_data['socketPort'],
                 socketHost=form.cleaned_data['socketHost'],

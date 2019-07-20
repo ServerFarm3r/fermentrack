@@ -264,7 +264,7 @@ class GenericPushTarget(models.Model):
                                 to_send['gravity_unit'] = "G"
                     except:
                         pass
-            string_to_send = to_send
+            string_to_send = json.dumps(to_send)
         else:
             raise ValueError("Invalid data format specified for push target")
         # We've got the data (in a json'ed string) - lets send it
@@ -279,7 +279,8 @@ class GenericPushTarget(models.Model):
             return False
 
         if self.target_type == self.SENSOR_PUSH_HTTP:
-            r = requests.post(self.target_host, json=json_data)
+            post_headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
+            r = requests.post(self.target_host,headers=post_headers,data=json_data)
             return True  # TODO - Check if the post actually succeeded & react accordingly
         elif self.target_type == self.SENSOR_PUSH_TCP:
             # TODO - Push to a socket endpoint

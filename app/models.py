@@ -1312,7 +1312,7 @@ class BeerLogPoint(models.Model):
                 else:
                     logger.error("BeerLogPoint.enrich_gravity_data called with unsupported temp format {}".format(temp_format))
 
-            self.gravity_temp = temp
+            self.gravity_temp = round(temp,1)
 
 
     def data_point(self, data_format='base_csv', set_defaults=True):

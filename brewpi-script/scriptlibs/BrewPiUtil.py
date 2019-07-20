@@ -184,15 +184,15 @@ def save_beer_log_point(db_config_object, beer_row):
     """
     new_log_point = models.BeerLogPoint()
 
-    new_log_point.beer_temp = beer_row['BeerTemp']
+    new_log_point.beer_temp = round(beer_row['BeerTemp'],1)
     new_log_point.beer_set = beer_row['BeerSet']
     new_log_point.beer_ann = beer_row['BeerAnn']
 
-    new_log_point.fridge_temp = beer_row['FridgeTemp']
+    new_log_point.fridge_temp = round(beer_row['FridgeTemp'],1)
     new_log_point.fridge_set = beer_row['FridgeSet']
     new_log_point.fridge_ann = beer_row['FridgeAnn']
 
-    new_log_point.room_temp = beer_row['RoomTemp']
+    new_log_point.room_temp = round(beer_row['RoomTemp'],1)
     new_log_point.state = beer_row['State']
 
     new_log_point.temp_format = db_config_object.temp_format

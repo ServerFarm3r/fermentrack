@@ -47,10 +47,12 @@ class GenericPushTarget(models.Model):
     DATA_FORMAT_GENERIC = 'generic'
     DATA_FORMAT_TILTBRIDGE = 'tiltbridge'
     DATA_FORMAT_BREWERSFRIEND = 'brewersfriend'
+    DATA_FORMAT_BREWFATHER = 'brewfather'
 
     DATA_FORMAT_CHOICES = (
         (DATA_FORMAT_GENERIC, 'All Data (Generic)'),
         (DATA_FORMAT_BREWERSFRIEND, 'Brewers Friend'),
+        (DATA_FORMAT_BREWFATHER, 'BrewFather'),
         # (DATA_FORMAT_TILTBRIDGE, 'TiltBridge Device'),
     )
 
@@ -223,7 +225,46 @@ class GenericPushTarget(models.Model):
             # For Brewers Friend, we're just cascading the gravity sensors downstream to the app
             raise NotImplementedError("Brewers Friend coming (very) soon")
             pass
+       
+        elif self.data_format == self.DATA_FORMAT_BREWFATHER:
 
+            to_send = {}
+            if brewpi_to_send is not None:
+                for brewpi in brewpi_to_send:
+                    # TODO - Make it so that this data is stored in/loaded from Redis
+                    device_info = brewpi.get_dashpanel_info()
+
+                    if device_info is None:
+                        continue
+
+                    # Have to coerce temps to floats, as Decimals aren't json serializable
+                    
+                    to_send['name'] = brewpi.device_name
+                    to_send['temp_unit'] = brewpi.temp_format
+            
+
+                    # Because not every device will have temp sensors, only serialize the sensors that exist.
+                    # Have to coerce temps to floats, as Decimals aren't json serializable
+                    if device_info['BeerTemp'] is not None:
+                        if device_info['BeerTemp'] != 0:
+                            to_send['temp'] = float(device_info['BeerTemp'])
+                    if device_info['FridgeTemp'] is not None:
+                        if device_info['FridgeTemp'] != 0:
+                            to_send['aux_temp'] = float(device_info['FridgeTemp'])
+                    if device_info['RoomTemp'] is not None:
+                        if device_info['RoomTemp'] != 0:
+                            to_send['ext_temp'] = float(device_info['RoomTemp'])
+
+                    # Gravity isn't retrieved via get_dashpanel_info, and as such requires special handling
+                    try:
+                        if brewpi.gravity_sensor is not None:
+                            gravity = brewpi.gravity_sensor.retrieve_latest_gravity()
+                            if gravity is not None:
+                                to_send['gravity'] = float(gravity)
+                                to_send['gravity_unit'] = "G"
+                    except:
+                        pass
+            string_to_send = json.dumps(to_send)
         else:
             raise ValueError("Invalid data format specified for push target")
         # We've got the data (in a json'ed string) - lets send it

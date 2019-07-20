@@ -845,7 +845,7 @@ while run:
             elif newTemp != cs['beerSet']:
                 try:
                     newTemp = float(newTemp)
-                    cs['beerSet'] = round(newTemp, 2)
+                    cs['beerSet'] = round(newTemp, 1)
                 except ValueError:
                     logMessage("Cannot convert temperature '" + newTemp + "' to float")
                     continue
